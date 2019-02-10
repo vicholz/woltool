@@ -14,6 +14,8 @@ import urllib.request
 # Setup command line args
 cmdline_parser = argparse.ArgumentParser(description='Polls sheet script to see if WOL was requested.')
 cmdline_parser.add_argument('--url', required=True, action='store', help='Google script URL.')
+cmdline_parser.add_argument('--retries', default=1, required=False, action='store', help='Number of times to retry. 0 for unlimited. Default is 1.')
+cmdline_parser.add_argument('--interval', default=5, required=False, action='store', help='How many minutes to wait between retries.')
 cmdline_parser.add_argument('--debug', required=False, action='store_true', help='Enable debug output.')
 args = cmdline_parser.parse_args()
 
@@ -22,9 +24,6 @@ logger = logging.getLogger(os.path.basename(__file__))
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s: %(message)s')
 logger.setLevel(logging.INFO)
 if args.debug: logger.setLevel(logging.DEBUG)
-
-# Setup globals
-interval = 5 # minutes
 
 def sendWOL(name, mac):
     logger.debug("Sending wol for {name} - {mac}...".format(**locals()))
@@ -54,6 +53,9 @@ def sendStatus(data):
         logger.error(e)
         exit(1)
 
+retries = int(args.retries)
+if retries == 0:
+    retries = -1
 while True:
     try:
         logger.debug("Loading {url}...".format(url=args.url))
@@ -79,6 +81,9 @@ while True:
         logger.error("ERROR! Could not load {url}".format(url=args.url))
         logger.error(e)
         exit(1)
-    exit(1)
-    logger.debug("Sleeping for {interval} minutes...".format(**locals()))
-    time.sleep(interval * 60)
+    retries = retries - 1
+    if retries == 0:
+        break
+    else:
+        logger.debug("Sleeping for {interval} minutes...".format(interval=args.interval))
+        time.sleep(int(args.interval) * 60)
