@@ -1,6 +1,7 @@
 [Unit]
 Description=WOLTool Daemon
-After=networking.service
+After=network-online.target
+Wants=network-online.target
 
 [Service]
 Type=simple
@@ -8,6 +9,7 @@ ExecStart=/home/pi/git/woltool/woltool.py --retries 0 --interval 5 --url ${GSHEE
 ExecStop=/usr/bin/pgrep -f woltool.py | xargs kill -9
 User=pi
 Group=pi
+Restart=always
 
 [Install]
 Alias=woltool
