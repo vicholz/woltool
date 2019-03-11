@@ -10,6 +10,7 @@ ExecStop=/usr/bin/pgrep -f woltool.py | xargs kill -9
 User=pi
 Group=pi
 Restart=always
+RestartSec=60
 
 [Install]
 Alias=woltool
