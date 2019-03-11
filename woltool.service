@@ -1,0 +1,14 @@
+[Unit]
+Description=WOLTool Daemon
+After=networking.service
+
+[Service]
+Type=simple
+ExecStart=/home/pi/git/woltool.py --retries 0 --interval 5 --url ${GSHEET_URL}
+ExecStop=/usr/bin/pgrep -f woltools.py | xargs kill -9
+User=pi
+Group=pi
+
+[Install]
+Alias=woltool
+WantedBy=multi-user.target
