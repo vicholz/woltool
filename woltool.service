@@ -4,8 +4,8 @@ After=networking.service
 
 [Service]
 Type=simple
-ExecStart=/home/pi/git/woltool.py --retries 0 --interval 5 --url ${GSHEET_URL}
-ExecStop=/usr/bin/pgrep -f woltools.py | xargs kill -9
+ExecStart=/home/pi/git/woltool/woltool.py --retries 0 --interval 5 --url ${GSHEET_URL}
+ExecStop=/usr/bin/pgrep -f woltool.py | xargs kill -9
 User=pi
 Group=pi
 
