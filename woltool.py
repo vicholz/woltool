@@ -15,7 +15,7 @@ import urllib.request
 cmdline_parser = argparse.ArgumentParser(description='Polls sheet script to see if WOL was requested.')
 cmdline_parser.add_argument('--url', required=True, action='store', help='Google script URL.')
 cmdline_parser.add_argument('--retries', default=1, required=False, action='store', help='Number of times to retry. 0 for unlimited. Default is 1.')
-cmdline_parser.add_argument('--interval', default=5, required=False, action='store', help='How many minutes to wait between retries.')
+cmdline_parser.add_argument('--interval', default=False, required=False, action='store', help='How many minutes to wait between retries.')
 cmdline_parser.add_argument('--debug', required=False, action='store_true', help='Enable debug output.')
 args = cmdline_parser.parse_args()
 
@@ -85,5 +85,8 @@ while True:
     if retries == 0:
         break
     else:
-        logger.debug("Sleeping for {interval} minutes...".format(interval=args.interval))
-        time.sleep(int(args.interval) * 60)
+        if args.interval:
+            logger.debug("Sleeping for {interval} minutes...".format(interval=args.interval))
+            time.sleep(int(args.interval) * 60)
+        else:
+            exit(0)
